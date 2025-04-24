@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YIELD FAST CALCULATOR</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #f0f4f8;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Prompt', 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: var(--dark);
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      padding-bottom: 20px;
+    }
+    
+    .app-header {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .app-title {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+    
+    .app-subtitle {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    
+    .content {
+      padding: 20px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: white;
+    }
+    
+    th {
+      background: var(--primary);
+      color: white;
+      padding: 15px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    
+    td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    tr:nth-child(even) {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    tr:hover {
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+    
+    td input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+    
+    td input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    .dropdown-toggle {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #6c757d;
+      cursor: pointer;
+      font-size: 14px;
+      display: none;
+      padding: 5px;
+    }
+    
+    .dropdown-toggle:hover {
+      color: var(--primary);
+    }
+    
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      min-width: 180px;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000; /* เพิ่ม z-index ให้มีค่าสูง */
+      text-align: left;
+      padding: 10px 0;
+    }
+    
+    .dropdown-header {
+      font-weight: 600;
+      padding: 5px 15px;
+      color: #6c757d;
+      font-size: 0.85rem;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 5px;
+    }
+    
+    .dropdown-item {
+      padding: 8px 15px;
+      color: var(--dark);
+      font-size: 0.9rem;
+    }
+    
+    .dropdown-item:hover {
+      background: #f5f7fa;
+    }
+    
+    .calculated-cell {
+      font-weight: 600;
+      color: var(--dark);
+    }
+    
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-add {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-reset {
+      background: #f3f4f6;
+      color: var(--dark);
+    }
+    
+    .btn-add:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-reset:hover {
+      background: #e5e7eb;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .app-title {
+        font-size: 1.5rem;
+      }
+      
+      th, td {
+        padding: 10px 5px;
+        font-size: 0.9rem;
+      }
+      
+      td input {
+        padding: 8px 5px;
+      }
+      
+      button {
+        padding: 10px 16px;
+      }
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #6c757d;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    tr {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    
+    /* เพิ่มคลาสใหม่สำหรับ dropdown ที่กำลังแสดง */
+    .dropdown-fixed {
+      position: fixed;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      padding: 10px 0;
+      min-width: 180px;
+      max-width: 300px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="app-header">
+      <h1 class="app-title">YIELD CALCULATOR</h1>
+      <p class="app-subtitle">คำนวณผลผลิตอย่างง่าย และรวดเร็ว</p>
+    </div>
+    
+    <div class="content">
+      <table id="calculatorTable">
+        <thead>
+          <tr>
+            <th>ผลิตได้ (kg)</th>
+            <th>วัตถุดิบ (kg)</th>
+            <th>ส่วนต่าง</th>
+            <th>เปอร์เซ็นต์</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows will be added dynamically -->
+        </tbody>
+      </table>
+      
+      <div class="button-group">
+        <button class="btn-add" onclick="addRow()">
+          <i class="fas fa-plus"></i> เพิ่มแถว
+        </button>
+        <button class="btn-reset" onclick="resetTable()">
+          <i class="fas fa-sync-alt"></i> รีเซต
+        </button>
+      </div>
+      
+      <div class="footer">
+        © 2025 YIELD FAST CALCULATOR by NAMJIT | ระบบคำนวณผลผลิตอย่างง่าย by NAMJIT
+      </div>
+    </div>
+  </div>
+
+  <!-- เพิ่ม element ใหม่สำหรับแสดง dropdown เป็น fixed position -->
+  <div id="fixedDropdown" class="dropdown-fixed" style="display: none;"></div>
+
+  <script>
+    const table = document.getElementById("calculatorTable").getElementsByTagName('tbody')[0];
+    const inputRefs = [];
+    const fixedDropdown = document.getElementById("fixedDropdown");
+    let activeDropdownToggle = null;
+
+    function createInputCell(onEnter) {
+      const cell = document.createElement("td");
+      const inputWrapper = document.createElement("div");
+      inputWrapper.className = "input-wrapper";
+      
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "0.00";
+      
+      const dropdownToggle = document.createElement("button");
+      dropdownToggle.className = "dropdown-toggle";
+      dropdownToggle.innerHTML = '<i class="fas fa-calculator"></i>';
+      dropdownToggle.style.display = "none";
+      
+      const dropdownContent = document.createElement("div");
+      dropdownContent.className = "dropdown-content";
+      
+      inputWrapper.appendChild(input);
+      inputWrapper.appendChild(dropdownToggle);
+      cell.appendChild(inputWrapper);
+      
+      // Click event for dropdown toggle
+      dropdownToggle.addEventListener("click", function(e) {
+        e.stopPropagation();
+        
+        // ปิด dropdown ที่กำลังเปิดอยู่ถ้าคลิกปุ่มเดิม
+        if (activeDropdownToggle === dropdownToggle && fixedDropdown.style.display === "block") {
+          fixedDropdown.style.display = "none";
+          activeDropdownToggle = null;
+          return;
+        }
+        
+        // เก็บ reference ของปุ่มที่กำลังใช้งาน
+        activeDropdownToggle = dropdownToggle;
+        
+        // คำนวณตำแหน่งของ dropdown
+        const rect = dropdownToggle.getBoundingClientRect();
+        fixedDropdown.style.top = rect.bottom + "px";
+        
+        // ตรวจสอบว่าควรแสดงทางซ้ายหรือขวา
+        const rightEdge = rect.right;
+        const windowWidth = window.innerWidth;
+        if (rightEdge + 180 > windowWidth) {
+          // แสดงทางซ้ายของปุ่ม
+          fixedDropdown.style.right = (windowWidth - rect.left) + "px";
+          fixedDropdown.style.left = "auto";
+        } else {
+          // แสดงทางขวาของปุ่ม
+          fixedDropdown.style.left = rect.left + "px";
+          fixedDropdown.style.right = "auto";
+        }
+        
+        // คัดลอกเนื้อหาไปยัง fixed dropdown
+        fixedDropdown.innerHTML = dropdownContent.innerHTML;
+        fixedDropdown.style.display = "block";
+      });
+
+      return { 
+        cell, 
+        input, 
+        dropdownToggle,
+        dropdownContent,
+        setHandler: () => {
+          input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+              try {
+                // Store the original expression
+                const originalExpression = input.value;
+                
+                // Calculate the result
+                const result = eval(originalExpression);
+                
+                // แสดงผลลัพธ์เป็นทศนิยม 2 ตำแหน่ง
+                input.value = parseFloat(result).toFixed(2);
+                
+                // Parse for multiplication operations
+                const multiplications = parseMultiplications(originalExpression);
+                
+                // Show dropdown toggle if we found multiplications
+                if (multiplications.length > 0) {
+                  // Create dropdown content
+                  dropdownContent.innerHTML = '';
+                  
+                  const header = document.createElement("div");
+                  header.className = "dropdown-header";
+                  header.textContent = "รายละเอียดการคำนวณ";
+                  dropdownContent.appendChild(header);
+                  
+                  multiplications.forEach(item => {
+                    const itemElement = document.createElement("div");
+                    itemElement.className = "dropdown-item";
+                    itemElement.textContent = item;
+                    dropdownContent.appendChild(itemElement);
+                  });
+                  
+                  dropdownToggle.style.display = "block";
+                } else {
+                  dropdownToggle.style.display = "none";
+                }
+                
+                onEnter();
+              } catch (err) {
+                input.value = "ERROR";
+                dropdownToggle.style.display = "none";
+              }
+            }
+          });
+        }
+      };
+    }
+
+    function parseMultiplications(expression) {
+      // Remove spaces
+      expression = expression.replace(/\s+/g, '');
+      
+      // Match patterns like: number*number
+      const multiplicationPattern = /(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)/g;
+      const matches = [];
+      let match;
+      
+      // Find all multiplication operations
+      while ((match = multiplicationPattern.exec(expression)) !== null) {
+        const result = parseFloat(match[1]) * parseFloat(match[2]);
+        matches.push(`${match[1]} × ${match[2]} = ${result.toFixed(2)}`);
+      }
+      
+      return matches;
+    }
+
+    function addRow() {
+      const row = document.createElement("tr");
+
+      let rowIndex = inputRefs.length;
+
+      const { cell: prodCell, input: prodInput, dropdownToggle: prodDropdownToggle, dropdownContent: prodDropdownContent, setHandler: setProdHandler } = createInputCell(() => {
+        updateCalculatedValues();
+        inputRefs[rowIndex][1].focus();
+      });
+
+      const { cell: matCell, input: matInput, dropdownToggle: matDropdownToggle, dropdownContent: matDropdownContent, setHandler: setMatHandler } = createInputCell(() => {
+        updateCalculatedValues();
+        if (inputRefs[rowIndex + 1]) {
+          inputRefs[rowIndex + 1][0].focus();
+        }
+      });
+
+      const gapCell = document.createElement("td");
+      gapCell.className = "calculated-cell";
+      
+      const percentCell = document.createElement("td");
+      percentCell.className = "calculated-cell";
+
+      row.appendChild(prodCell);
+      row.appendChild(matCell);
+      row.appendChild(gapCell);
+      row.appendChild(percentCell);
+      table.appendChild(row);
+
+      inputRefs.push([prodInput, matInput]);
+      setProdHandler();
+      setMatHandler();
+
+      function updateCalculatedValues() {
+        const prodValue = parseFloat(prodInput.value);
+        const matValue = parseFloat(matInput.value);
+
+        if (!isNaN(prodValue) && !isNaN(matValue)) {
+          const gap = matValue - prodValue;
+          const percent = (prodValue / matValue) * 100;
+          gapCell.textContent = `${gap.toFixed(2)} kg.`;
+          percentCell.textContent = `${percent.toFixed(2)}%`;
+          
+          // Add color indication based on percentage
+          if (percent >= 90) {
+            percentCell.style.color = "#4caf50"; // Green for good yield
+          } else if (percent >= 80) {
+            percentCell.style.color = "#ff9800"; // Orange for moderate yield
+          } else {
+            percentCell.style.color = "#f44336"; // Red for poor yield
+          }
+        } else {
+          gapCell.textContent = "";
+          percentCell.textContent = "";
+        }
+      }
+    }
+
+    function resetTable() {
+      while (table.rows.length > 0) {
+        table.deleteRow(0);
+      }
+      inputRefs.length = 0;
+      for (let i = 0; i < 10; i++) addRow();
+    }
+
+    // ปิด dropdown เมื่อคลิกที่อื่น
+    document.addEventListener("click", function(e) {
+      if (fixedDropdown.style.display === "block" && !e.target.closest(".dropdown-toggle")) {
+        fixedDropdown.style.display = "none";
+        activeDropdownToggle = null;
+      }
+    });
+
+    // Initialize with 10 rows
+    for (let i = 0; i < 10; i++) addRow();
+  </script>
+</body>
+</html>
